@@ -7,4 +7,9 @@ sealed class Routes : NavKey {
   @Serializable
   data object Home : Routes()
 
+  @Serializable
+  data object Resultados : Routes(){
+
+  }
+
 }
