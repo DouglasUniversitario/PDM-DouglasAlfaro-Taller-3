@@ -1,4 +1,4 @@
-package com.pdmcourse2026.basictemplate.data.api
+package com.pdmcourse2026.basictemplate.remote
 
 import android.util.Log
 import io.ktor.client.HttpClient

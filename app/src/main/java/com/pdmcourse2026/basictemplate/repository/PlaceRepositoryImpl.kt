@@ -1,8 +1,7 @@
 package com.pdmcourse2026.basictemplate.repository
 
 import com.pdmcourse2026.basictemplate.BuildConfig
-import com.pdmcourse2026.basictemplate.data.api.PlaceDto
-import com.pdmcourse2026.basictemplate.model.VoteRequest
+import com.pdmcourse2026.basictemplate.remote.PlaceDto
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

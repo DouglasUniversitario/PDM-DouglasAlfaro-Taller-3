@@ -2,7 +2,7 @@ package com.pdmcourse2026.basictemplate.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pdmcourse2026.basictemplate.data.api.PlaceDto
+import com.pdmcourse2026.basictemplate.remote.PlaceDto
 import com.pdmcourse2026.basictemplate.repository.PlaceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

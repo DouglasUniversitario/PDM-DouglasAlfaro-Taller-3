@@ -1,6 +1,6 @@
 package com.pdmcourse2026.basictemplate.repository
 
-import com.pdmcourse2026.basictemplate.data.api.PlaceDto
+import com.pdmcourse2026.basictemplate.remote.PlaceDto
 
 interface PlaceRepository {
     suspend fun getPlaces(): Result<List<PlaceDto>>
