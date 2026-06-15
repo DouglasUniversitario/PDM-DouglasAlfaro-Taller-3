@@ -1,7 +1,7 @@
-package com.pdmcourse2026.basictemplate.repository
+package com.pdmcourse2026.basictemplate.data.repository
 
 import com.pdmcourse2026.basictemplate.BuildConfig
-import com.pdmcourse2026.basictemplate.remote.PlaceDto
+import com.pdmcourse2026.basictemplate.data.remote.PlaceDto
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.pdmcourse2026.basictemplate.remote.PlaceDto
+import com.pdmcourse2026.basictemplate.data.remote.PlaceDto
 import com.pdmcourse2026.basictemplate.viewmodel.HomeState
 import com.pdmcourse2026.basictemplate.viewmodel.HomeViewModel
 
