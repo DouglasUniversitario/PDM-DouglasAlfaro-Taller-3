@@ -1,6 +1,5 @@
 package com.pdmcourse2026.basictemplate.data.api
 
-
 import kotlinx.serialization.Serializable
 
 @Serializable

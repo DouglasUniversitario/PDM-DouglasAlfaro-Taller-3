@@ -41,13 +41,14 @@ class HomeViewModel(private val repository: PlaceRepository) : ViewModel() {
         val currentState = _state.value
         if (currentState is HomeState.Success) {
             viewModelScope.launch {
-
-                repository.voteForPlace(placeId)
-                    .onSuccess {
-                        _state.value = currentState.copy(votedPlaceId = placeId)
-                    }
+                // Actualizamos el ID votado en el estado actual para que se marque en la UI
+                _state.value = currentState.copy(votedPlaceId = placeId)
+                
+                // Llamamos al repositorio con el carnet (puedes cambiar este valor)
+                repository.voteForPlace(placeId, "00077320")
                     .onFailure { error ->
-                        _state.value = HomeState.Error("No se pudo registrar el voto")
+                        // Si falla, mostramos el error
+                        _state.value = HomeState.Error(error.message ?: "Error al registrar el voto")
                     }
             }
         }

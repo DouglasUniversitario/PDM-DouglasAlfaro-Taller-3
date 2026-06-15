@@ -1,7 +1,5 @@
 package com.pdmcourse2026.basictemplate.viewmodel
 
-
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pdmcourse2026.basictemplate.data.api.PlaceDto

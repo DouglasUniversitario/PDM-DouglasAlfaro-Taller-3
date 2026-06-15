@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,6 +36,11 @@ import com.pdmcourse2026.basictemplate.viewmodel.ResultsViewModel
 fun ResultadosScreen(viewModel: ResultsViewModel, onNavigateToHome: () -> Unit) {
     val state by viewModel.state.collectAsState()
     val isRefreshing = state is ResultsState.Loading
+
+    // Forzamos la actualización de datos cada vez que entramos a la pantalla
+    LaunchedEffect(Unit) {
+        viewModel.fetchResults()
+    }
 
     Scaffold(
         topBar = {

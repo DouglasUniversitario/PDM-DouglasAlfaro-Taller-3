@@ -15,11 +15,7 @@ if (localPropertiesFile.exists()) {
 
 android {
   namespace = "com.pdmcourse2026.basictemplate"
-  compileSdk {
-    version = release(36) {
-      minorApiLevel = 1
-    }
-  }
+  compileSdk = 36
 
   defaultConfig {
     applicationId = "com.pdmcourse2026.basictemplate"
@@ -30,7 +26,11 @@ android {
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-    //buildConfigField("String", "API_TOKEN", "\"$apiToken\"")
+    val apiKey: String = localProperties.getProperty("RANK_UCA_API_KEY") ?: ""
+    val baseUrl: String = localProperties.getProperty("RANK_UCA_BASE_URL") ?: ""
+
+    buildConfigField("String", "API_KEY", "\"$apiKey\"")
+    buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
   }
 
   buildTypes {
