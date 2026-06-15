@@ -6,7 +6,7 @@ import com.pdmcourse2026.basictemplate.data.remote.KtorClient
 import com.pdmcourse2026.basictemplate.data.repository.OptionRepository
 import com.pdmcourse2026.basictemplate.data.repository.OptionRepositoryImpl
 import com.pdmcourse2026.basictemplate.data.repository.PlaceRepository
-import com.pdmcourse2026.basictemplate.repository.PlaceRepositoryImpl
+import com.pdmcourse2026.basictemplate.data.repository.PlaceRepositoryImpl
 
 class AppProvider(context: Context) {
 

@@ -1,17 +1,15 @@
 package com.pdmcourse2026.basictemplate
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.pdmcourse2026.basictemplate.data.remote.KtorClient
-import com.pdmcourse2026.basictemplate.repository.PlaceRepositoryImpl
 import com.pdmcourse2026.basictemplate.screens.home.HomeScreen
 import com.pdmcourse2026.basictemplate.screens.home.ResultadosScreen
+import com.pdmcourse2026.basictemplate.screens.home.OptionsScreen
 import com.pdmcourse2026.basictemplate.viewmodel.HomeViewModel
 import com.pdmcourse2026.basictemplate.viewmodel.ResultsViewModel
 
@@ -19,8 +17,10 @@ import com.pdmcourse2026.basictemplate.viewmodel.ResultsViewModel
 fun RankeUCA_App() {
     val backStack = rememberNavBackStack(Routes.Home)
 
-    // Repositorio compartido instanciado con el cliente Ktor
-    val repository = remember { PlaceRepositoryImpl(KtorClient.client) }
+    // Usamos el AppProvider de la aplicación para obtener los repositorios
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val appProvider = (context.applicationContext as RankeUcaApplication).appProvider
+    val placeRepository = appProvider.providePlaceRepository()
 
     NavDisplay(
         backStack = backStack,
@@ -30,19 +30,20 @@ fun RankeUCA_App() {
             entry<Routes.Home> {
                 val viewModel: HomeViewModel = viewModel(
                     factory = viewModelFactory {
-                        initializer { HomeViewModel(repository) }
+                        initializer { HomeViewModel(placeRepository) }
                     }
                 )
                 HomeScreen(
                     viewModel = viewModel,
-                    onNavigateToResults = { backStack.add(Routes.Resultados) }
+                    onNavigateToResults = { backStack.add(Routes.Resultados) },
+                    onNavigateToOptions = { backStack.add(Routes.Options) }
                 )
             }
 
             entry<Routes.Resultados> {
                 val viewModel: ResultsViewModel = viewModel(
                     factory = viewModelFactory {
-                        initializer { ResultsViewModel(repository) }
+                        initializer { ResultsViewModel(placeRepository) }
                     }
                 )
                 ResultadosScreen(
@@ -54,6 +55,10 @@ fun RankeUCA_App() {
                         }
                     }
                 )
+            }
+
+            entry<Routes.Options> {
+                OptionsScreen()
             }
         }
     )
