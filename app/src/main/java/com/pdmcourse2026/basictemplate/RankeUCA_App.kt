@@ -8,8 +8,9 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.pdmcourse2026.basictemplate.screens.home.HomeScreen
-import com.pdmcourse2026.basictemplate.screens.home.ResultadosScreen
 import com.pdmcourse2026.basictemplate.screens.home.OptionsScreen
+import com.pdmcourse2026.basictemplate.screens.home.QuestionsScreen
+import com.pdmcourse2026.basictemplate.screens.home.ResultadosScreen
 import com.pdmcourse2026.basictemplate.viewmodel.HomeViewModel
 import com.pdmcourse2026.basictemplate.viewmodel.ResultsViewModel
 
@@ -17,7 +18,6 @@ import com.pdmcourse2026.basictemplate.viewmodel.ResultsViewModel
 fun RankeUCA_App() {
     val backStack = rememberNavBackStack(Routes.Home)
 
-    // Usamos el AppProvider de la aplicación para obtener los repositorios
     val context = androidx.compose.ui.platform.LocalContext.current
     val appProvider = (context.applicationContext as RankeUcaApplication).appProvider
     val placeRepository = appProvider.providePlaceRepository()
@@ -33,10 +33,29 @@ fun RankeUCA_App() {
                         initializer { HomeViewModel(placeRepository) }
                     }
                 )
+
                 HomeScreen(
                     viewModel = viewModel,
-                    onNavigateToResults = { backStack.add(Routes.Resultados) },
-                    onNavigateToOptions = { backStack.add(Routes.Options) }
+                    onNavigateToResults = {
+                        backStack.add(Routes.Resultados)
+                    },
+                    onNavigateToOptions = {
+                        backStack.add(Routes.Questions)
+                    }
+                )
+            }
+
+            entry<Routes.Questions> {
+                QuestionsScreen(
+                    onQuestionClick = { questionId ->
+                        backStack.add(Routes.Options(questionId))
+                    }
+                )
+            }
+
+            entry<Routes.Options> { route ->
+                OptionsScreen(
+                    questionId = route.questionId
                 )
             }
 
@@ -46,19 +65,15 @@ fun RankeUCA_App() {
                         initializer { ResultsViewModel(placeRepository) }
                     }
                 )
+
                 ResultadosScreen(
                     viewModel = viewModel,
                     onNavigateToHome = {
-                        // Limpiamos el stack y volvemos a Home
                         while (backStack.size > 1) {
                             backStack.removeLastOrNull()
                         }
                     }
                 )
-            }
-
-            entry<Routes.Options> {
-                OptionsScreen()
             }
         }
     )

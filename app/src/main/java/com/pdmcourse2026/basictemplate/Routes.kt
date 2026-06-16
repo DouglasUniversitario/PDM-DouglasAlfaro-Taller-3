@@ -9,7 +9,8 @@ sealed class Routes : NavKey {
 
   @Serializable
   data object Resultados : Routes()
-
   @Serializable
-  data object Options : Routes()
+  data object Questions : Routes()
+  @Serializable
+  data class Options(val questionId: Int) : Routes()
 }

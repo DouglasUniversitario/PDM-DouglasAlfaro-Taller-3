@@ -1,5 +1,6 @@
 package com.pdmcourse2026.basictemplate.screens.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,29 +43,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.pdmcourse2026.basictemplate.viewmodel.OptionsViewModel
+import com.pdmcourse2026.basictemplate.viewmodel.QuestionsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OptionsScreen(
-    questionId: Int,
-    viewModel: OptionsViewModel = viewModel(
-        factory = OptionsViewModel.provideFactory(questionId)
-    )
-    ) {
-    val options by viewModel.options.collectAsStateWithLifecycle()
+fun QuestionsScreen(
+    onQuestionClick: (Int) -> Unit,
+    viewModel: QuestionsViewModel = viewModel(factory = QuestionsViewModel.Factory)
+) {
+    val questions by viewModel.questions.collectAsStateWithLifecycle()
     var showSheet by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         topBar = {
             TopAppBar(
-                title = { Text("Administrar opciones") },
+                title = { Text("Preguntas") },
                 actions = {
                     TextButton(onClick = { showSheet = true }) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "Nueva opción")
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Nueva pregunta")
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Nuevo")
+                        Text("Nueva")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -79,8 +78,7 @@ fun OptionsScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-
-            if (options.isEmpty()) {
+            if (questions.isEmpty()) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -94,11 +92,11 @@ fun OptionsScreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = "Todavía no hay opciones",
+                        text = "Todavía no hay preguntas",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "Toca Nuevo para crear la primera.",
+                        text = "Toca Nueva para crear la primera.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -109,27 +107,31 @@ fun OptionsScreen(
                     contentPadding = PaddingValues(vertical = 4.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(items = options, key = { it.id }) { option ->
-                        ElevatedCard {
+                    items(items = questions, key = { it.id }) { question ->
+                        ElevatedCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onQuestionClick(question.id) }
+                        ) {
                             ListItem(
                                 headlineContent = {
                                     Text(
-                                        text = option.name,
+                                        text = question.title,
                                         style = MaterialTheme.typography.titleMedium
                                     )
                                 },
                                 supportingContent = {
                                     Text(
-                                        text = option.imageUrl,
+                                        text = "${question.optionCount} opciones",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 },
                                 trailingContent = {
-                                    IconButton(onClick = { viewModel.deleteOption(option) }) {
+                                    IconButton(onClick = { viewModel.deleteQuestion(question) }) {
                                         Icon(
                                             imageVector = Icons.Default.DeleteOutline,
-                                            contentDescription = "Borrar ${option.name}",
+                                            contentDescription = "Borrar ${question.title}",
                                             tint = MaterialTheme.colorScheme.error
                                         )
                                     }
@@ -143,9 +145,9 @@ fun OptionsScreen(
     }
 
     if (showSheet) {
-        OptionBottomSheet(
-            onSave = { name, imageUrl ->
-                viewModel.addOption(name, imageUrl)
+        QuestionBottomSheet(
+            onSave = { title ->
+                viewModel.addQuestion(title)
             },
             onDismiss = { showSheet = false }
         )
@@ -154,15 +156,14 @@ fun OptionsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OptionBottomSheet(
-    onSave: (name: String, imageUrl: String) -> Unit,
+fun QuestionBottomSheet(
+    onSave: (title: String) -> Unit,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
-    var name by rememberSaveable { mutableStateOf("") }
-    var imageUrl by rememberSaveable { mutableStateOf("") }
+    var title by rememberSaveable { mutableStateOf("") }
 
-    val isValid = name.isNotBlank() && imageUrl.isNotBlank()
+    val isValid = title.isNotBlank()
 
     ModalBottomSheet(
         sheetState = sheetState,
@@ -176,28 +177,15 @@ fun OptionBottomSheet(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "Nueva opción",
+                text = "Nueva pregunta",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = "Agrega nombre e imagen para que aparezca en la lista.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
 
             OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Nombre del lugar") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            OutlinedTextField(
-                value = imageUrl,
-                onValueChange = { imageUrl = it },
-                label = { Text("URL de la imagen") },
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Título de la pregunta") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -211,7 +199,7 @@ fun OptionBottomSheet(
                 Button(
                     onClick = {
                         if (isValid) {
-                            onSave(name.trim(), imageUrl.trim())
+                            onSave(title.trim())
                             onDismiss()
                         }
                     },

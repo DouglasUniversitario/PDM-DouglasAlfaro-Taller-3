@@ -15,6 +15,11 @@ class PlaceRepositoryImpl(private val client: HttpClient) : PlaceRepository {
 
     override suspend fun getPlaces(): Result<List<PlaceDto>> {
         return try {
+
+            println("BASE_URL = $baseUrl")
+            println("URL COMPLETA = ${baseUrl}options")
+
+
             val response = client.get("${baseUrl}options") {
                 header(HttpHeaders.Authorization, "Bearer $apiKey")
                 header("apikey", apiKey)
